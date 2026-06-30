@@ -40,3 +40,11 @@ huggingface-cli download KlingTeam/LivePortrait \
 python LivePortrait/inference.py \
 -s myphoto.jpg \
 -d talking.mp4
+# Clone SadTalker
+if [ ! -d "SadTalker" ]; then
+    git clone https://github.com/OpenTalker/SadTalker.git
+fi
+
+cd SadTalker
+pip install -r requirements.txt
+cd ..
