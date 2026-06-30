@@ -32,3 +32,8 @@ cd LivePortrait
 pip install -r requirements.txt
 
 cd ..
+pip install -U "huggingface_hub[cli]"
+
+huggingface-cli download KlingTeam/LivePortrait \
+    --local-dir pretrained_weights \
+    --exclude "*.git*" "README.md" "docs"
