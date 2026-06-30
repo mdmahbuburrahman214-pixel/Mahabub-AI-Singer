@@ -66,3 +66,44 @@ demo = gr.Interface(
 )
 
 demo.launch()
+import os
+import shutil
+import subprocess
+import gradio as gr
+
+os.makedirs("assets/input", exist_ok=True)
+os.makedirs("assets/output", exist_ok=True)
+
+def generate(image, audio):
+
+    img = "assets/input/image.png"
+    wav = "assets/input/audio.wav"
+
+    shutil.copy(image, img)
+    shutil.copy(audio, wav)
+
+    cmd = [
+        "python",
+        "liveportrait_runner.py",
+        "--image",
+        img,
+        "--audio",
+        wav
+    ]
+
+    subprocess.run(cmd)
+
+    return "assets/output/output.mp4"
+
+demo = gr.Interface(
+    fn=generate,
+    inputs=[
+        gr.Image(type="filepath", label="Portrait Image"),
+        gr.Audio(type="filepath", label="Song / Voice")
+    ],
+    outputs=gr.Video(),
+    title="Mahabub AI Singer Studio",
+    description="Generate AI Singing Video using LivePortrait"
+)
+
+demo.launch(share=True)
