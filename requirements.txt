@@ -29,3 +29,8 @@ face-alignment
 facexlib
 basicsr
 realesrgan
+gdown
+face-alignment
+facexlib
+realesrgan
+soundfile
