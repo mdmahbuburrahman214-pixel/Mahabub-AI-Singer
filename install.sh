@@ -1,13 +1,19 @@
 #!/bin/bash
-
 set -e
 
-echo "========================================="
+echo "====================================="
 echo " Mahabub AI Singer Studio Installer"
-echo "========================================="
+echo "====================================="
 
-python -m pip install --upgrade pip
+apt-get update
+apt-get install -y ffmpeg git wget
+
+pip install --upgrade pip
 
 pip install -r requirements.txt
+
+mkdir -p assets/input
+mkdir -p assets/output
+mkdir -p checkpoints
 
 echo "Installation Complete."
