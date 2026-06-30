@@ -107,3 +107,21 @@ demo = gr.Interface(
 )
 
 demo.launch(share=True)
+import gradio as gr
+from sadtalker_runner import generate
+
+def run(image, audio):
+    output_dir = generate(image, audio)
+    return output_dir
+
+demo = gr.Interface(
+    fn=run,
+    inputs=[
+        gr.Image(type="filepath", label="Portrait Image"),
+        gr.Audio(type="filepath", label="Song / Voice")
+    ],
+    outputs=gr.File(label="Generated Video"),
+    title="Mahabub AI Singer Studio"
+)
+
+demo.launch(share=True)
