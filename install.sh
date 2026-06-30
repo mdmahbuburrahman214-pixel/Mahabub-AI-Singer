@@ -37,3 +37,6 @@ pip install -U "huggingface_hub[cli]"
 huggingface-cli download KlingTeam/LivePortrait \
     --local-dir pretrained_weights \
     --exclude "*.git*" "README.md" "docs"
+python LivePortrait/inference.py \
+-s myphoto.jpg \
+-d talking.mp4
