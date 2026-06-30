@@ -16,3 +16,17 @@ def generate(image_path, audio_path):
     subprocess.run(cmd, check=True)
 
     return "assets/output"
+import subprocess
+
+def run(image, driving):
+
+    cmd = [
+        "python",
+        "LivePortrait/inference.py",
+        "-s", image,
+        "-d", driving
+    ]
+
+    subprocess.run(cmd, check=True)
+
+    return "LivePortrait/animations"
