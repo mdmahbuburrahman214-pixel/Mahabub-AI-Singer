@@ -1,37 +1,84 @@
-import os
-import gdown
+#!/usr/bin/env python3
 
-os.makedirs("checkpoints", exist_ok=True)
+import os
+import sys
+from pathlib import Path
+
+import requests
+from tqdm import tqdm
+
+CHECKPOINT_DIR = Path("checkpoints")
+CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
+
+# -------------------------------------------------------------------
+# Add official model download URLs here
+# Example:
+#
+# MODELS = {
+#     "model_name.pth":
+#     "https://example.com/model_name.pth"
+# }
+# -------------------------------------------------------------------
 
 MODELS = {
-    # পরে আসল Model URL বসানো হবে
 }
 
-for name, url in MODELS.items():
-    output = os.path.join("checkpoints", name)
-    if not os.path.exists(output):
-        print(f"Downloading {name}...")
-        gdown.download(url, output, quiet=False)
 
-print("All models downloaded.")
-import os
-import urllib.request
+def download_file(url: str, output_path: Path):
 
-CHECKPOINT_DIR = "checkpoints"
-os.makedirs(CHECKPOINT_DIR, exist_ok=True)
+    response = requests.get(url, stream=True)
 
-MODELS = {
-    # পরের ধাপে LivePortrait-এর অফিসিয়াল model URL যোগ করা হবে
-}
+    response.raise_for_status()
 
-for filename, url in MODELS.items():
-    path = os.path.join(CHECKPOINT_DIR, filename)
+    total = int(response.headers.get("content-length", 0))
 
-    if os.path.exists(path):
-        print(filename, "already exists.")
-        continue
+    with open(output_path, "wb") as file, tqdm(
+        desc=output_path.name,
+        total=total,
+        unit="B",
+        unit_scale=True,
+        unit_divisor=1024,
+    ) as progress:
 
-    print("Downloading", filename)
-    urllib.request.urlretrieve(url, path)
+        for chunk in response.iter_content(chunk_size=8192):
 
-print("All models ready.")
+            if chunk:
+                file.write(chunk)
+                progress.update(len(chunk))
+
+
+def main():
+
+    if len(MODELS) == 0:
+
+        print("\nNo models configured.\n")
+        print("Please add official model URLs inside MODELS dictionary.")
+        sys.exit(0)
+
+    print("\nDownloading AI Models...\n")
+
+    for filename, url in MODELS.items():
+
+        output = CHECKPOINT_DIR / filename
+
+        if output.exists():
+
+            print(f"✓ {filename} already exists.")
+            continue
+
+        try:
+
+            download_file(url, output)
+
+            print(f"✓ Downloaded {filename}")
+
+        except Exception as e:
+
+            print(f"✗ Failed: {filename}")
+            print(e)
+
+    print("\nAll downloads completed.")
+
+
+if __name__ == "__main__":
+    main()
