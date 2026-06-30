@@ -29,3 +29,20 @@ echo "Downloading Models..."
 python download_models.py
 
 echo "Installation Finished Successfully."
+import gradio as gr
+
+def generate(image, audio):
+
+    return "Coming Soon"
+
+demo = gr.Interface(
+    fn=generate,
+    inputs=[
+        gr.Image(type="filepath"),
+        gr.Audio(type="filepath")
+    ],
+    outputs="text",
+    title="Mahabub AI Singer Studio"
+)
+
+demo.launch()
