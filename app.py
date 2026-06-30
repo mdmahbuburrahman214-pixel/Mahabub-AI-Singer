@@ -46,3 +46,23 @@ demo = gr.Interface(
 )
 
 demo.launch()
+import gradio as gr
+from liveportrait_runner import generate
+
+def run(image, audio):
+
+    output = generate(image, audio)
+
+    return output
+
+demo = gr.Interface(
+    fn=run,
+    inputs=[
+        gr.Image(type="filepath"),
+        gr.Audio(type="filepath")
+    ],
+    outputs=gr.File(),
+    title="Mahabub AI Singer Studio"
+)
+
+demo.launch()
