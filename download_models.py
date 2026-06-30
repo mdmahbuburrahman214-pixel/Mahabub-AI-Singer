@@ -1,11 +1,16 @@
-from huggingface_hub import snapshot_download
+import os
+import gdown
 
-print("Downloading SadTalker models...")
+os.makedirs("checkpoints", exist_ok=True)
 
-snapshot_download(
-    repo_id="vinthony/SadTalker-V002rc",
-    local_dir="models",
-    local_dir_use_symlinks=False
-)
+MODELS = {
+    # পরে আসল Model URL বসানো হবে
+}
 
-print("All models downloaded successfully.")
+for name, url in MODELS.items():
+    output = os.path.join("checkpoints", name)
+    if not os.path.exists(output):
+        print(f"Downloading {name}...")
+        gdown.download(url, output, quiet=False)
+
+print("All models downloaded.")
