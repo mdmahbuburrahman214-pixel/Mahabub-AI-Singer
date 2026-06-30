@@ -1,36 +1,67 @@
+# ==========================
+# Core Deep Learning
+# ==========================
 torch
 torchvision
 torchaudio
 
-opencv-python
+# ==========================
+# Numerical Computing
+# ==========================
 numpy
 scipy
+
+# ==========================
+# Image Processing
+# ==========================
+opencv-python
 Pillow
-
-gradio>=5.0
-
 imageio
 imageio-ffmpeg
 
-gdown
-tqdm
-
-ffmpeg-python
-
-transformers
-safetensors
-omegaconf
-einops
-
+# ==========================
+# Audio Processing
+# ==========================
 librosa
 soundfile
+ffmpeg-python
 
+# ==========================
+# AI / Transformers
+# ==========================
+transformers
+accelerate
+safetensors
+einops
+omegaconf
+
+# ==========================
+# Face Processing
+# ==========================
 face-alignment
 facexlib
 basicsr
 realesrgan
+gfpgan
+
+# ==========================
+# Web UI
+# ==========================
+gradio>=5.0
+
+# ==========================
+# Utilities
+# ==========================
+tqdm
 gdown
-face-alignment
-facexlib
-realesrgan
-soundfile
+huggingface_hub
+requests
+PyYAML
+
+# ==========================
+# Optional
+# ==========================
+av
+matplotlib
+scikit-image
+scikit-learn
