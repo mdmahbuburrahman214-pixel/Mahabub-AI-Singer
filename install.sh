@@ -22,3 +22,13 @@ git clone https://github.com/KwaiVGI/LivePortrait.git
 cd LivePortrait
 pip install -r requirements.txt
 cd ..
+# Clone LivePortrait
+if [ ! -d "LivePortrait" ]; then
+    git clone https://github.com/KwaiVGI/LivePortrait.git
+fi
+
+cd LivePortrait
+
+pip install -r requirements.txt
+
+cd ..
