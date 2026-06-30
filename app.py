@@ -1,127 +1,91 @@
-#!/bin/bash
-set -e
-
-echo "========================================"
-echo " Mahabub AI Singer Studio Installer"
-echo "========================================"
-
-sudo apt-get update
-sudo apt-get install -y ffmpeg git wget unzip
-
-python -m pip install --upgrade pip
-
-pip install -r requirements.txt
-
-mkdir -p assets/input
-mkdir -p assets/output
-mkdir -p checkpoints
-
-# Clone LivePortrait
-if [ ! -d "LivePortrait" ]; then
-    git clone https://github.com/KwaiVGI/LivePortrait.git
-fi
-
-cd LivePortrait
-pip install -r requirements.txt
-cd ..
-
-echo "Downloading Models..."
-python download_models.py
-
-echo "Installation Finished Successfully."
-import gradio as gr
-
-def generate(image, audio):
-
-    return "Coming Soon"
-
-demo = gr.Interface(
-    fn=generate,
-    inputs=[
-        gr.Image(type="filepath"),
-        gr.Audio(type="filepath")
-    ],
-    outputs="text",
-    title="Mahabub AI Singer Studio"
-)
-
-demo.launch()
-import gradio as gr
-from liveportrait_runner import generate
-
-def run(image, audio):
-
-    output = generate(image, audio)
-
-    return output
-
-demo = gr.Interface(
-    fn=run,
-    inputs=[
-        gr.Image(type="filepath"),
-        gr.Audio(type="filepath")
-    ],
-    outputs=gr.File(),
-    title="Mahabub AI Singer Studio"
-)
-
-demo.launch()
 import os
-import shutil
-import subprocess
-import gradio as gr
-
-os.makedirs("assets/input", exist_ok=True)
-os.makedirs("assets/output", exist_ok=True)
-
-def generate(image, audio):
-
-    img = "assets/input/image.png"
-    wav = "assets/input/audio.wav"
-
-    shutil.copy(image, img)
-    shutil.copy(audio, wav)
-
-    cmd = [
-        "python",
-        "liveportrait_runner.py",
-        "--image",
-        img,
-        "--audio",
-        wav
-    ]
-
-    subprocess.run(cmd)
-
-    return "assets/output/output.mp4"
-
-demo = gr.Interface(
-    fn=generate,
-    inputs=[
-        gr.Image(type="filepath", label="Portrait Image"),
-        gr.Audio(type="filepath", label="Song / Voice")
-    ],
-    outputs=gr.Video(),
-    title="Mahabub AI Singer Studio",
-    description="Generate AI Singing Video using LivePortrait"
-)
-
-demo.launch(share=True)
 import gradio as gr
 from sadtalker_runner import generate
 
-def run(image, audio):
-    output_dir = generate(image, audio)
-    return output_dir
+# Create required folders
+os.makedirs("assets/input", exist_ok=True)
+os.makedirs("assets/output", exist_ok=True)
 
-demo = gr.Interface(
-    fn=run,
-    inputs=[
-        gr.Image(type="filepath", label="Portrait Image"),
-        gr.Audio(type="filepath", label="Song / Voice")
-    ],
-    outputs=gr.File(label="Generated Video"),
+
+def create_video(image_path, audio_path):
+    """
+    Generate talking face video using SadTalker.
+    """
+
+    if image_path is None:
+        raise gr.Error("Please upload an image.")
+
+    if audio_path is None:
+        raise gr.Error("Please upload an audio file.")
+
+    output = generate(image_path, audio_path)
+
+    if os.path.isdir(output):
+        videos = [
+            os.path.join(output, f)
+            for f in os.listdir(output)
+            if f.endswith(".mp4")
+        ]
+
+        if len(videos) == 0:
+            raise gr.Error("No video generated.")
+
+        return videos[0]
+
+    if os.path.isfile(output):
+        return output
+
+    raise gr.Error("Output video not found.")
+
+
+with gr.Blocks(
     title="Mahabub AI Singer Studio"
-)
+) as demo:
 
-demo.launch(share=True)
+    gr.Markdown(
+        """
+# 🎤 Mahabub AI Singer Studio
+
+Generate AI Talking/Singing Video from a Portrait Image and Audio.
+"""
+    )
+
+    with gr.Row():
+
+        image = gr.Image(
+            type="filepath",
+            label="Portrait Image"
+        )
+
+        audio = gr.Audio(
+            type="filepath",
+            label="MP3 / WAV Audio"
+        )
+
+    generate_btn = gr.Button(
+        "🎬 Generate Video",
+        variant="primary"
+    )
+
+    output = gr.Video(
+        label="Generated Video"
+    )
+
+    generate_btn.click(
+        fn=create_video,
+        inputs=[image, audio],
+        outputs=output
+    )
+
+    gr.Markdown(
+        """
+---
+Mahabub AI Singer Studio v1.0
+"""
+    )
+
+if __name__ == "__main__":
+    demo.launch(
+        share=True,
+        debug=True
+    )
